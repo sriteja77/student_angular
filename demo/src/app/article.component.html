@@ -1,0 +1,63 @@
+<h1>STUDENT</h1>
+<h3 *ngIf="articleIdToUpdate; else create"> 
+   Update Article for Id: {{articleIdToUpdate}}
+</h3>
+<ng-template #create>
+   <h3> Student Details </h3>
+</ng-template>
+<div>
+ <form [formGroup]="articleForm" (ngSubmit)="onArticleFormSubmit()">
+  <table>
+    
+    <tr><td>Enter Name</td><td><input formControlName="name">
+	       <label *ngIf="articleForm.get('name').invalid && processValidation" [ngClass] = "'error'"> Name is required. </label>
+   	</td></tr>
+    <tr><td>Enter College</td><td><input formControlName="college">
+	       <label *ngIf="articleForm.get('college').invalid && processValidation" [ngClass] = "'error'"> College is required. </label>
+     </td></tr>
+     <tr><td>Enter email</td><td><input formControlName="email">
+          <label *ngIf="articleForm.get('email').invalid && processValidation" [ngClass] = "'error'"> College is required. </label>
+   </td></tr>
+    <tr><td colspan="2">
+	    <button *ngIf="!articleIdToUpdate">CREATE</button>  
+		<button *ngIf="articleIdToUpdate">UPDATE</button>  
+         <button (click)="backToCreateArticle()" *ngIf="articleIdToUpdate">Go Back</button>  
+	</td></tr>
+  </table>
+ </form> 
+ <br/>
+ <div *ngIf="statusCode; else processing">
+   <div *ngIf="statusCode === 201" [ngClass] = "'success'">
+	    Student details added successfully.
+   </div>   
+   <div *ngIf="statusCode === 409" [ngClass] = "'success'">
+        Student details already exists.
+   </div>   	
+   <div *ngIf="statusCode === 200" [ngClass] = "'success'">
+        Student Details updated successfully.
+   </div>   	      
+   <div *ngIf="statusCode === 204" [ngClass] = "'success'">
+        Student details deleted successfully.
+   </div>   	   
+   <div *ngIf="statusCode === 500" [ngClass] = "'error'">
+        Internal Server Error.
+   </div>   	
+ </div>
+ <ng-template #processing>
+	<img *ngIf="requestProcessing" src="assets/images/loading.gif">
+ </ng-template>
+</div>
+<h3>Student Details</h3>
+<table>
+  <tr><th>Id</th><th>Name</th><th>College</th><th>Email</th></tr>
+  <tr *ngFor="let student of allArticles" >
+   <td>{{student.id}}</td> 
+    <td>{{student.name}}</td> 
+    <td>{{student.college}}</td>
+    <td>{{student.email}}</td>
+   
+    <td>{{student.joinedDate| date :'short'}}</td>
+	<td><button type="button" (click)="loadArticleToEdit(student.id)">Edit</button> </td> 
+  <td><button type="button" (click)="deleteArticle(student.id)">Delete</button></td>
+  </tr>
+</table>
